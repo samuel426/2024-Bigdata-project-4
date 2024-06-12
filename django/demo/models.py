@@ -21,14 +21,15 @@ class Post(models.Model):
     
 
 class Show():
-    def __init__(self, input_1, input_2):
+    def __init__(self, f_path, input_1):
+        self.f_path = f_path
         self.input_1 = input_1
-        self.input_2 = input_2
+        #self.input_2 = input_2
 
     def getDataFromHDFS(self):
         # HDFS Namenode IP addr
         client = InsecureClient("http://192.168.0.48:50070", user="hadoop")
-        with client.read("/user/hadoop/strawberry_avg.csv", encoding='utf-8') as f:
+        with client.read(f"/user/hadoop/{self.f_path}", encoding='utf-8') as f:
             return f.read()
 
 
