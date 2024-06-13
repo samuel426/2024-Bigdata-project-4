@@ -72,14 +72,14 @@ def show_result(request):
             'FRST_TREE_CNT',
             'NOT_BLMNG_CNT',
             'BLMNG_CNT',
-            'BLPRD_TPCD',
+#            'BLPRD_TPCD',
             'FLWRCLSTR_FLWR_NBR',
             'FLWRCLSTR_BDDG_TPCD',
             'GRTH_SPD',
             'LEAF_LNGTH_LEAF_WDTH_RATE',
             'ACCMLT_LEAF_CNT',
             'LEAF_CNT_INCR_SPD',
-            'AXLRBD_OCRN_TPCD',
+#            'AXLRBD_OCRN_TPCD',
             'GRTH_LNGTH',
             'CRN_DIAM',
             'LEAF_CNT',
@@ -101,5 +101,9 @@ def show_result(request):
     df_spark_subset = find_column(df_spark, COLUMNS)
     df_pandas = df_spark_subset.toPandas()
     results = df_pandas.to_html(index=False)
-
-    return render(request, 'demo/show_result.html', {'results': results})
+    
+    if produce_type == 'tomato':
+        html_path = 'demo/show_result_tomato.html'
+    elif produce_type == 'strawberry':
+        html_path = 'demo/show_result_strawberry.html'
+    return render(request, html_path, {'results': results})
