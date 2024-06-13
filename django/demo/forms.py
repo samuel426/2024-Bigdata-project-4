@@ -1,9 +1,9 @@
 
 
 class ReceiveData():
-    def __init__(self, file, number):
-        self.file = file
-        self.number = number
+    def __init__(self, produce_info, input_dict):
+        self.produce_info = produce_info
+        self.number = input_dict
 
     def sendQueryToHDFS(self):
         '''

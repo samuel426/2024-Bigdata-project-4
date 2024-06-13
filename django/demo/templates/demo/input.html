@@ -7,9 +7,37 @@
         <header>
             <h1><a href="/">Main Page</a></h1>
         </header>
-        <form action="/demo/result" method="post">          
-            FileUpload <input type="file", name="file"><br>
-            Number <input type="number", step="0.001", name="number"><br>
+        <form action="/demo/result" method="post">
+            <p> 분석할 농작물 종류 선택</p>
+            <input type="radio" name="produce_info" value="tomato">Tomato
+            <input type="radio" name="produce_info" value="strawberry">Strawberry
+            <p> </p> 
+            관측지점실내이산화탄소농도 <input type="text", onkeyup="imsi(this)", name="PFBS_NTRO_CBDX_CTRN", placeholder="PFBS_NTRO_CBDX_CTRN"><br>
+            외부온도 <input type="text", onkeyup="imsi(this)", name="EXTN_TPRT", placeholder="EXTN_TPRT"><br>
+            이슬점온도 <input type="text", onkeyup="imsi(this)", name="DWP_TPRT", placeholder="DWP_TPRT"><br>
+            절대습도 <input type="text", onkeyup="imsi(this)", name="ABSLT_HMDT", placeholder="ABSLT_HMDT"><br>
+            포화수분 <input type="text", onkeyup="imsi(this)", name="STRTN_WATER", placeholder="STRTN_WATER"><br>
+            수분부족값 <input type="text", onkeyup="imsi(this)", name="WATER_LACK_VL", placeholder="WATER_LACK_VL"><br>
+            외부일사량 <input type="text", onkeyup="imsi(this)", name="EXTN_SRQT", placeholder="EXTN_SRQT"><br>
+            외부누적광량 <input type="text", onkeyup="imsi(this)", name="EXTN_ACCMLT_QOFLG", placeholder="EXTN_ACCMLT_QOFLG"><br>
+            양액공급산도레벨 <input type="text", onkeyup="imsi(this)", name="NTSLT_SPL_PH_LVL", placeholder="NTSLT_SPL_PH_LVL"><br>
+            양액공급전기전도도 <input type="text", onkeyup="imsi(this)", name="NTSLT_SPL_ELCDT", placeholder="NTSLT_SPL_ELCDT"><br>
+            평균내부온도 <input type="text", onkeyup="imsi(this)", name="AVE_INNER_TPRT_1_2", placeholder="AVE_INNER_TPRT_1_2"><br>
+            평균내부습도 <input type="text", onkeyup="imsi(this)", name="AVE_INNER_HMDT_1_2", placeholder="AVE_INNER_HMDT_1_2"><br>
+            <script type="text/javascript">
+                var prev = "";
+                var regexp = /^\d*(\.\d{0,8})?$/;
+                function imsi(obj) {
+                    if(obj.value.search(regexp)==-1) {
+                        obj.value = prev;
+                    }
+                    else {
+                        prev = obj.value;
+                    }
+                }
+            </script>
+            
+            <p> </p>
             <input type="submit" value="Send">
         </form>
         

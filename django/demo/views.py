@@ -4,6 +4,11 @@ from .models import Post, Show
 from .forms import ReceiveData
 
 
+KEY_LIST = ['PFBS_NTRO_CBDX_CTRN', 'EXTN_TPRT', 'DWP_TPRT', 'ABSLT_HMDT', 
+            'STRTN_WATER', 'WATER_LACK_VL', 'EXTN_SRQT', 'EXTN_ACCMLT_QOFLG', 
+            'NTSLT_SPL_PH_LVL', 'NTSLT_SPL_ELCDT', 'AVE_INNER_TPRT_1_2', 'AVE_INNER_HMDT_1_2']
+
+
 def post_list(request):
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
     return render(request, 'demo/post_list.html', {'posts': posts})
@@ -19,13 +24,17 @@ def show_result(request):
     '''
     
     # 1.
-    file = request.POST['file']
-    number = request.POST['number']
+    produce_info = request.POST['produce_info']
+    input_dict = {}
+    for key in KEY_LIST:
+        input_dict[key] = float(request.POST[key])
 
-    print(f'NUMBER: {number}')
+    for k, v in input_dict.items():
+        print(k, v)
+    print(type(v))
 
     # 2.
-    receive_data = ReceiveData(file, number)
+    receive_data = ReceiveData(produce_info, input_dict)
     f_path = receive_data.sendQueryToHDFS()
 
     # 3.
