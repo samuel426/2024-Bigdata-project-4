@@ -10,11 +10,11 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from functions.function import find_column
 
 
-KEY_LIST = ['PFBS_NTRO_CBDX_CTRN', 'EXTN_TPRT', 'DWP_TPRT', 'ABSLT_HMDT', 
-            'STRTN_WATER', 'WATER_LACK_VL', 'EXTN_SRQT', 'EXTN_ACCMLT_QOFLG', 
-            'NTSLT_SPL_PH_LVL', 'NTSLT_SPL_ELCDT', 'AVE_INNER_TPRT_1_2', 'AVE_INNER_HMDT_1_2']
+KEY_LIST = ['PFBS_NTRO_CBDX_CTRN', 'EXTN_TPRT',
+            'STRTN_WATER', 'WATER_LACK_VL', 'EXTN_ACCMLT_QOFLG', 
+            'AVE_INNER_TPRT_1_2', 'AVE_INNER_HMDT_1_2']
 
-KEY_LIST_TOMATO = ['DWP_TPRT', 'ABSLT_HMDT', 'NTSLT_SPL_PH_LVL', 'NTSLT_SPL_ELCDT']
+KEY_LIST_TOMATO = ['DWP_TPRT', 'NTSLT_SPL_PH_LVL', 'NTSLT_SPL_ELCDT']
 
 
 def post_list(request):
@@ -40,18 +40,18 @@ def show_result(request):
             KEY_LIST.append(k)
         
         COLUMNS = [
-            'BLUMNG_CLUSTER',
+            'BLMNG_CLUSTER',
             'FRT_LNGTH',
             'YIELD_CLUSTER',
             'FRST_TREE_CNT',
-            'LAST_FWRCT_NO ',
+            'LAST_FWRCT_NO',
             'FRST_CLUSTER',
             'FLWR_CNT',
             'YIELD_CNT',
             'STEM_THNS',
             'FRT_WDTH',
             'FRT_WT',
-            'LEAF_LNGTH'
+            'LEAF_LNGTH',
             'LEAF_WDTH',
             'LEAF_CNT',
             'GRTH_LNGTH',
@@ -100,6 +100,6 @@ def show_result(request):
     # 3.
     df_spark_subset = find_column(df_spark, COLUMNS)
     df_pandas = df_spark_subset.toPandas()
-    results = df_pandas.to_html()
+    results = df_pandas.to_html(index=False)
 
     return render(request, 'demo/show_result.html', {'results': results})
