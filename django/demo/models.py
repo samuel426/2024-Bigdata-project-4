@@ -4,6 +4,8 @@ from django.utils import timezone
 
 from hdfs import InsecureClient
 
+import pandas as pd
+
 
 class Post(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -18,7 +20,7 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
-    
+
 
 class Show():
     def __init__(self, f_path, input_1):
@@ -30,6 +32,8 @@ class Show():
         # HDFS Namenode IP addr
         client = InsecureClient("http://192.168.0.48:50070", user="hadoop")
         with client.read(f"/user/hadoop/{self.f_path}", encoding='utf-8') as f:
-            return f.read()
+            data = pd.read_csv(f)
+            return data
+#            return f.read()
 
 

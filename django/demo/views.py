@@ -3,10 +3,18 @@ from django.utils import timezone
 from .models import Post, Show
 from .forms import ReceiveData
 
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from functions.function import find_column
+
 
 KEY_LIST = ['PFBS_NTRO_CBDX_CTRN', 'EXTN_TPRT', 'DWP_TPRT', 'ABSLT_HMDT', 
             'STRTN_WATER', 'WATER_LACK_VL', 'EXTN_SRQT', 'EXTN_ACCMLT_QOFLG', 
             'NTSLT_SPL_PH_LVL', 'NTSLT_SPL_ELCDT', 'AVE_INNER_TPRT_1_2', 'AVE_INNER_HMDT_1_2']
+
+KEY_LIST_TOMATO = ['DWP_TPRT', 'ABSLT_HMDT', 'NTSLT_SPL_PH_LVL', 'NTSLT_SPL_ELCDT']
 
 
 def post_list(request):
@@ -24,23 +32,74 @@ def show_result(request):
     '''
     
     # 1.
-    produce_info = request.POST['produce_info']
-    input_dict = {}
-    for key in KEY_LIST:
-        input_dict[key] = float(request.POST[key])
+    produce_type = request.POST['produce_type']
+    produce_info = {}
 
-    for k, v in input_dict.items():
-        print(k, v)
-    print(type(v))
+    if produce_type == 'tomato':
+        for k in KEY_LIST_TOMATO:
+            KEY_LIST.append(k)
+        
+        COLUMNS = [
+            'BLUMNG_CLUSTER',
+            'FRT_LNGTH',
+            'YIELD_CLUSTER',
+            'FRST_TREE_CNT',
+            'LAST_FWRCT_NO ',
+            'FRST_CLUSTER',
+            'FLWR_CNT',
+            'YIELD_CNT',
+            'STEM_THNS',
+            'FRT_WDTH',
+            'FRT_WT',
+            'LEAF_LNGTH'
+            'LEAF_WDTH',
+            'LEAF_CNT',
+            'GRTH_LNGTH',
+            'PLT_LNGTH'
+        ]
+    
+    elif produce_type == 'strawberry':
+        COLUMNS = [
+            'SHPMN_QTY',
+            'PH_LVL',
+            'SGCN',
+            'FRT_WDTH',
+            'FRT_LNGTH',
+            'FRST_RATE',
+            'FRT_WT_WDTH_RATE',
+            'SGCN_PH_RATE',
+            'FRT_WT',
+            'FRST_TREE_CNT',
+            'NOT_BLMNG_CNT',
+            'BLMNG_CNT',
+            'BLPRD_TPCD',
+            'FLWRCLSTR_FLWR_NBR',
+            'FLWRCLSTR_BDDG_TPCD',
+            'GRTH_SPD',
+            'LEAF_LNGTH_LEAF_WDTH_RATE',
+            'ACCMLT_LEAF_CNT',
+            'LEAF_CNT_INCR_SPD',
+            'AXLRBD_OCRN_TPCD',
+            'GRTH_LNGTH',
+            'CRN_DIAM',
+            'LEAF_CNT',
+            'PTL_LNGTH',
+            'LEAF_WDTH',
+            'LEAF_LNGTH',
+            'PLT_LNGTH'
+        ]
+
+    for key in KEY_LIST:
+        produce_info[key] = float(request.POST[key])
+
 
     # 2.
-    receive_data = ReceiveData(produce_info, input_dict)
-    f_path = receive_data.sendQueryToHDFS()
+    receive_data = ReceiveData(produce_type, produce_info)
+    df_spark = receive_data.get()
 
     # 3.
-    # 아래 지정하는 변수가 다 request에서 파싱한 결과가 되어야 함.
-    input_1 = 1
-    #input_2 = 2
-    query = Show(f_path, input_1)
-    results = query.getDataFromHDFS()
+    df_spark_subset = find_column(df_spark, COLUMNS)
+    df_pandas = df_spark_subset.toPandas()
+    results = df_pandas.to_html()
+
     return render(request, 'demo/show_result.html', {'results': results})
